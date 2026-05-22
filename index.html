@@ -1,0 +1,719 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#B8960C;--gold-l:#D4AF37;--gold-bg:#FDF8E8;--gold-bd:#C9A227;
+  --dg:#1B3A2D;--dg2:#2D5A3D;--dg3:#3D7A52;--dg-lt:#EAF3EC;
+  --w:var(--color-background-primary);--bg:var(--color-background-secondary);
+  --bd:var(--color-border-tertiary);--t:var(--color-text-primary);--t2:var(--color-text-secondary)
+}
+body{font-family:var(--font-sans);font-size:14px;color:var(--t);background:transparent}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--dg);color:#fff;padding:10px 20px;display:flex;align-items:center;gap:14px}
+.logo-text strong{display:block;font-size:15px;color:var(--gold-l);font-weight:500}
+.logo-text span{font-size:11px;color:#aaa}
+.topbar-title{margin-left:auto;font-size:13px;color:var(--gold-l);font-weight:500}
+.main{display:flex;flex:1}
+.sidebar{width:200px;min-width:200px;background:var(--dg);display:flex;flex-direction:column;padding:12px 0}
+.nav-sec{padding:6px 12px 2px;font-size:10px;color:#6b8a7a;letter-spacing:.5px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 16px;cursor:pointer;font-size:13px;color:#c8d8cc;border-left:3px solid transparent;transition:all .15s}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.nav-item.active{background:rgba(212,175,55,.12);color:var(--gold-l);border-left-color:var(--gold-l)}
+.nav-item i{font-size:16px;opacity:.8}
+.content{flex:1;overflow-y:auto;padding:20px;background:var(--bg)}
+.page{display:none}.page.active{display:block}
+.ph{margin-bottom:18px}
+.ph h1{font-size:18px;font-weight:500}
+.ph p{font-size:13px;color:var(--t2);margin-top:2px}
+.card{background:var(--w);border:0.5px solid var(--bd);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:14px}
+.ctitle{font-size:13px;font-weight:500;color:var(--dg);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--gold-bd);display:flex;align-items:center;gap:6px}
+.ctitle i{color:var(--gold);font-size:16px}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.fgrp{display:flex;flex-direction:column;gap:4px}
+.fgrp label{font-size:12px;color:var(--t2);font-weight:500}
+.fgrp input,.fgrp select,.fgrp textarea{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--border-radius-md);padding:7px 10px;font-size:13px;color:var(--t);font-family:var(--font-sans);width:100%}
+.fgrp input:focus,.fgrp select:focus,.fgrp textarea:focus{outline:none;border-color:var(--gold)}
+.fgrp textarea{resize:vertical;min-height:60px}
+.ref-field{background:var(--gold-bg);border:0.5px solid var(--gold-bd);border-radius:var(--border-radius-md);padding:7px 10px;font-size:13px;color:var(--dg);font-weight:500;min-height:34px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:var(--font-sans)}
+.btn-p{background:var(--dg);color:#fff}.btn-p:hover{background:var(--dg2)}
+.btn-g{background:var(--gold);color:#fff}.btn-g:hover{background:var(--gold-l)}
+.btn-o{background:transparent;border:0.5px solid var(--bd);color:var(--t)}.btn-o:hover{background:var(--bg)}
+.btn-d{background:#c0392b;color:#fff}
+.btn-sm{padding:4px 10px;font-size:12px}
+.bbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+th{background:var(--dg);color:var(--gold-l);font-weight:500;padding:8px 10px;text-align:left;font-size:12px}
+td{padding:7px 10px;border-bottom:0.5px solid var(--bd);color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:hover td{background:var(--gold-bg)}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
+.bg-green{background:var(--dg-lt);color:var(--dg2)}
+.bg-gold{background:var(--gold-bg);color:#7a5e00}
+.bg-warn{background:#fff3cd;color:#856404;border:0.5px solid #ffc107;cursor:pointer}
+.bg-red{background:#fdecea;color:#b71c1c}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.stat-card{background:var(--w);border:0.5px solid var(--bd);border-radius:var(--border-radius-md);padding:12px}
+.stat-card .val{font-size:22px;font-weight:500;color:var(--dg)}
+.stat-card .lbl{font-size:11px;color:var(--t2);margin-top:2px}
+.gold-bar{height:3px;background:var(--gold);border-radius:2px;margin-bottom:16px;opacity:.6}
+.doc-no{font-family:var(--font-mono);font-size:12px;color:var(--dg);background:var(--gold-bg);padding:2px 6px;border-radius:4px;border:0.5px solid var(--gold-bd)}
+.sr-only{position:absolute;left:-9999px}
+</style>
+
+<h2 class="sr-only">ระบบบันทึกรับ-ส่งสินค้า บริษัทเจียไต๋ จำกัด</h2>
+
+<div class="app">
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="8" width="84" height="84" rx="4" fill="none" stroke="#D4AF37" stroke-width="7"/>
+      <circle cx="50" cy="50" r="26" fill="none" stroke="#D4AF37" stroke-width="7"/>
+      <rect x="8" y="64" width="20" height="20" fill="#1B3A2D"/>
+      <rect x="72" y="64" width="20" height="20" fill="#1B3A2D"/>
+    </svg>
+    <div class="logo-text">
+      <strong>CHIA TAI</strong>
+      <span>บริษัทเจียไต๋ จำกัด</span>
+    </div>
+  </div>
+  <div class="topbar-title">ระบบบันทึกรับ-ส่งสินค้า | ใบส่งออกสินค้าระหว่างหน้า-เข้าโกดัง</div>
+</div>
+
+<div class="main">
+<div class="sidebar">
+  <div class="nav-sec">หลัก</div>
+  <div class="nav-item active" onclick="showPage('p-receive')"><i class="ti ti-ship" aria-hidden="true"></i> รับเรือ</div>
+  <div class="nav-item" onclick="showPage('p-export')"><i class="ti ti-truck" aria-hidden="true"></i> ส่งออกสินค้า</div>
+  <div class="nav-item" onclick="showPage('p-warehouse')"><i class="ti ti-building-warehouse" aria-hidden="true"></i> รับสินค้าเข้าโกดัง</div>
+  <div class="nav-sec">ระบบ</div>
+  <div class="nav-item" onclick="showPage('p-report')"><i class="ti ti-chart-bar" aria-hidden="true"></i> สรุปรายงาน</div>
+  <div class="nav-item" onclick="showPage('p-settings')"><i class="ti ti-settings" aria-hidden="true"></i> ตั้งค่าระบบ</div>
+</div>
+
+<div class="content">
+
+<!-- หน้ารับเรือ -->
+<div id="p-receive" class="page active">
+  <div class="ph">
+    <h1><i class="ti ti-ship" aria-hidden="true" style="color:var(--gold);margin-right:6px"></i>หน้ารับเรือ</h1>
+    <p>บันทึกข้อมูลการรับสินค้าทางเรือ — บริษัทเจียไต๋ จำกัด</p>
+  </div>
+  <div class="gold-bar"></div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-forms" aria-hidden="true"></i>กรอกข้อมูลรับเรือ</div>
+    <div class="fg">
+      <div class="fgrp"><label>วันที่</label><input type="date" id="rv-date"></div>
+      <div class="fgrp"><label>คลังสินค้า</label>
+        <select id="rv-warehouse">
+          <option value="">-- เลือกคลัง --</option>
+          <option>คลังบางไทร</option><option>คลังเพชรทองบ่อ</option><option>คลังนครหลวง</option>
+        </select>
+      </div>
+      <div class="fgrp"><label>สถานที่ขนถ่าย</label><input type="text" id="rv-location" placeholder="กรอกสถานที่..."></div>
+      <div class="fgrp"><label>สูตรปุ๋ย</label><select id="rv-formula"><option value="">-- เลือกสูตร --</option></select></div>
+      <div class="fgrp"><label>Line ผลิต</label><input type="text" id="rv-line" placeholder="เช่น Line A"></div>
+      <div class="fgrp"><label>ชื่อเรือใหญ่</label><input type="text" id="rv-ship" placeholder="ชื่อเรือใหญ่"></div>
+      <div class="fgrp"><label>ชื่อเรือโป๊ะ</label><input type="text" id="rv-barge" placeholder="ชื่อเรือโป๊ะ"></div>
+      <div class="fgrp"><label>แยกประเภท</label>
+        <select id="rv-type"><option>เรือ</option><option>ตู้คอนเทนเนอร์</option></select>
+      </div>
+      <div class="fgrp"><label>หมวดหมู่</label>
+        <select id="rv-cat"><option>กระสอบ 50 กก.</option><option>จัมโบ้</option></select>
+      </div>
+      <div class="fgrp"><label>เวลาเริ่ม</label><input type="time" id="rv-start"></div>
+    </div>
+    <div class="bbar">
+      <button class="btn btn-p" onclick="saveReceive()"><i class="ti ti-device-floppy" aria-hidden="true"></i> บันทึก</button>
+      <button class="btn btn-o" onclick="clearRv()"><i class="ti ti-refresh" aria-hidden="true"></i> ล้างฟอร์ม</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-list" aria-hidden="true"></i>รายการรับเรือ</div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th style="width:80px">วันที่</th><th style="width:90px">เรือใหญ่</th><th style="width:80px">เรือโป๊ะ</th>
+          <th style="width:100px">คลัง</th><th style="width:80px">สูตรปุ๋ย</th><th style="width:60px">Line</th>
+          <th style="width:90px">หมวดหมู่</th><th style="width:60px">เริ่ม</th><th style="width:60px">เสร็จ</th>
+          <th style="width:120px">สถานะ</th><th style="width:50px">ลบ</th>
+        </tr></thead>
+        <tbody id="rv-body"><tr><td colspan="11" style="text-align:center;color:var(--t2);padding:20px">ยังไม่มีรายการ</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- หน้าส่งออกสินค้า -->
+<div id="p-export" class="page">
+  <div class="ph">
+    <h1><i class="ti ti-truck" aria-hidden="true" style="color:var(--gold);margin-right:6px"></i>ส่งออกสินค้าจากหน้าท่า</h1>
+    <p>บันทึกการส่งออกสินค้า — บริษัทเจียไต๋ จำกัด</p>
+  </div>
+  <div class="gold-bar"></div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-forms" aria-hidden="true"></i>กรอกข้อมูลส่งออก</div>
+    <div class="fg">
+      <div class="fgrp"><label>เลขที่เอกสาร</label><div class="ref-field" id="ex-docno">CT-EX-00001</div></div>
+      <div class="fgrp"><label>ชื่อเรือใหญ่</label>
+        <select id="ex-ship" onchange="autoFillExport()"><option value="">-- เลือกเรือ --</option></select>
+      </div>
+      <div class="fgrp"><label>คลังสินค้า</label><div class="ref-field" id="ex-wh">-</div></div>
+      <div class="fgrp"><label>สูตรปุ๋ย</label><div class="ref-field" id="ex-formula">-</div></div>
+      <div class="fgrp"><label>Line ผลิต</label><input type="text" id="ex-line" placeholder="Line ผลิต"></div>
+      <div class="fgrp"><label>ชื่อเรือโป๊ะ</label>
+        <select id="ex-barge"><option value="">-- เลือกเรือโป๊ะ --</option></select>
+      </div>
+      <div class="fgrp"><label>รถบรรทุก</label>
+        <select id="ex-truck"><option value="">-- เลือกรถ --</option></select>
+      </div>
+      <div class="fgrp"><label>จำนวนกระสอบ</label><input type="number" id="ex-bags" placeholder="0"></div>
+      <div class="fgrp"><label>ผู้จัดส่งสินค้า</label>
+        <select id="ex-sender"><option value="">-- เลือก --</option></select>
+      </div>
+      <div class="fgrp"><label>เวลาเริ่ม (จากเรือ)</label><div class="ref-field" id="ex-rv-start">-</div></div>
+      <div class="fgrp"><label>เวลาเสร็จ (จากเรือ)</label><div class="ref-field" id="ex-rv-end">-</div></div>
+      <div class="fgrp"><label>เวลาเริ่มส่งออก</label><input type="time" id="ex-start"></div>
+      <div class="fgrp"><label>เวลาเสร็จส่งออก</label><input type="time" id="ex-end"></div>
+    </div>
+    <div class="fgrp" style="margin-top:10px">
+      <label>หมายเหตุ (ไม่เกิน 1,000 ตัวอักษร)</label>
+      <textarea id="ex-note" maxlength="1000" rows="3" placeholder="หมายเหตุ..."></textarea>
+    </div>
+    <div class="bbar">
+      <button class="btn btn-p" onclick="saveExport()"><i class="ti ti-device-floppy" aria-hidden="true"></i> บันทึก</button>
+      <button class="btn btn-o" onclick="clearEx()"><i class="ti ti-refresh" aria-hidden="true"></i> ล้างฟอร์ม</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-list" aria-hidden="true"></i>รายการส่งออก</div>
+    <div class="bbar" style="margin-bottom:10px;margin-top:0">
+      <button class="btn btn-g btn-sm" onclick="exportExcelEx()"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Export Excel</button>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th style="width:100px">เลขที่เอกสาร</th><th style="width:80px">เรือใหญ่</th>
+          <th style="width:80px">คลัง</th><th style="width:70px">สูตรปุ๋ย</th>
+          <th style="width:60px">Line</th><th style="width:70px">รถบรรทุก</th>
+          <th style="width:60px">กระสอบ</th><th style="width:60px">เริ่ม</th>
+          <th style="width:60px">เสร็จ</th><th style="width:80px">ผู้จัดส่ง</th><th style="width:50px">พิมพ์</th>
+        </tr></thead>
+        <tbody id="ex-body"><tr><td colspan="11" style="text-align:center;color:var(--t2);padding:20px">ยังไม่มีรายการ</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- หน้ารับสินค้าเข้าโกดัง -->
+<div id="p-warehouse" class="page">
+  <div class="ph">
+    <h1><i class="ti ti-building-warehouse" aria-hidden="true" style="color:var(--gold);margin-right:6px"></i>รับสินค้าเข้าโกดัง</h1>
+    <p>บันทึกการรับสินค้าเข้าโกดัง — บริษัทเจียไต๋ จำกัด</p>
+  </div>
+  <div class="gold-bar"></div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-forms" aria-hidden="true"></i>กรอกข้อมูลรับเข้าโกดัง</div>
+    <div class="fg">
+      <div class="fgrp"><label>วันที่และเวลา (อัตโนมัติ)</label><div class="ref-field" id="wh-dt">-</div></div>
+      <div class="fgrp"><label>เลือกรถบรรทุก</label>
+        <select id="wh-truck" onchange="autoFillWh()"><option value="">-- เลือกรถ --</option></select>
+      </div>
+      <div class="fgrp"><label>เรือใหญ่</label><div class="ref-field" id="wh-ship">-</div></div>
+      <div class="fgrp"><label>เรือโป๊ะ</label><div class="ref-field" id="wh-barge">-</div></div>
+      <div class="fgrp"><label>สูตรปุ๋ย</label><div class="ref-field" id="wh-formula">-</div></div>
+      <div class="fgrp"><label>จำนวนกระสอบ</label><div class="ref-field" id="wh-bags">-</div></div>
+      <div class="fgrp"><label>เวลาเริ่ม / เสร็จ</label><div class="ref-field" id="wh-time">-</div></div>
+      <div class="fgrp"><label>เลขที่ Lot</label><input type="text" id="wh-lot" placeholder="เลขที่ Lot"></div>
+      <div class="fgrp"><label>โกดังที่จัดเก็บ</label><select id="wh-storage"><option value="">-- เลือกโกดัง --</option></select></div>
+      <div class="fgrp"><label>ผู้รับสินค้า</label><select id="wh-receiver"><option value="">-- เลือก --</option></select></div>
+    </div>
+    <div class="fgrp" style="margin-top:10px">
+      <label>หมายเหตุ (ไม่เกิน 1,000 ตัวอักษร)</label>
+      <textarea id="wh-note" maxlength="1000" rows="3" placeholder="หมายเหตุ..."></textarea>
+    </div>
+    <div class="bbar">
+      <button class="btn btn-p" onclick="saveWh()"><i class="ti ti-device-floppy" aria-hidden="true"></i> บันทึก</button>
+      <button class="btn btn-g btn-sm" onclick="exportExcelWh()"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Export Excel</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-list" aria-hidden="true"></i>รายการรับเข้าโกดัง</div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th style="width:110px">วันที่-เวลา</th><th style="width:70px">รถ</th><th style="width:80px">เรือใหญ่</th>
+          <th style="width:70px">เรือโป๊ะ</th><th style="width:70px">สูตรปุ๋ย</th><th style="width:60px">กระสอบ</th>
+          <th style="width:60px">Lot</th><th style="width:70px">โกดัง</th><th style="width:70px">ผู้รับ</th><th style="width:90px">สถานะ</th>
+        </tr></thead>
+        <tbody id="wh-body"><tr><td colspan="10" style="text-align:center;color:var(--t2);padding:20px">ยังไม่มีรายการ</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- หน้าสรุปรายงาน -->
+<div id="p-report" class="page">
+  <div class="ph">
+    <h1><i class="ti ti-chart-bar" aria-hidden="true" style="color:var(--gold);margin-right:6px"></i>สรุปรายงาน</h1>
+    <p>ภาพรวมการรับ-ส่งสินค้า — บริษัทเจียไต๋ จำกัด</p>
+  </div>
+  <div class="gold-bar"></div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="val" id="rpt-rv">0</div><div class="lbl">รายการรับเรือ</div></div>
+    <div class="stat-card"><div class="val" id="rpt-ex">0</div><div class="lbl">รายการส่งออก</div></div>
+    <div class="stat-card"><div class="val" id="rpt-wh">0</div><div class="lbl">รับเข้าโกดัง</div></div>
+    <div class="stat-card"><div class="val" id="rpt-bags">0</div><div class="lbl">กระสอบรวม</div></div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-filter" aria-hidden="true"></i>ตัวกรองรายงาน</div>
+    <div class="fg">
+      <div class="fgrp"><label>คลังสินค้า</label>
+        <select id="rpt-wh"><option value="">ทั้งหมด</option><option>คลังบางไทร</option><option>คลังเพชรทองบ่อ</option><option>คลังนครหลวง</option></select>
+      </div>
+      <div class="fgrp"><label>ชื่อเรือใหญ่</label><select id="rpt-ship"><option value="">ทั้งหมด</option></select></div>
+      <div class="fgrp"><label>วันที่เริ่ม</label><input type="date" id="rpt-from"></div>
+      <div class="fgrp"><label>วันที่สิ้นสุด</label><input type="date" id="rpt-to"></div>
+      <div class="fgrp"><label>ประเภทรายงาน</label>
+        <select id="rpt-type"><option>รับเรือ</option><option>ส่งออกสินค้าจากหน้าท่า</option><option>รับสินค้าเข้าโกดัง</option></select>
+      </div>
+      <div class="fgrp"><label>Line ผลิต</label><select id="rpt-line"><option value="">ทั้งหมด</option></select></div>
+      <div class="fgrp"><label>รูปแบบ</label><select id="rpt-mode"><option>รายงาน</option><option>ประจำเดือน</option></select></div>
+    </div>
+    <div class="bbar">
+      <button class="btn btn-p" onclick="genReport()"><i class="ti ti-search" aria-hidden="true"></i> ดูรายงาน</button>
+      <button class="btn btn-g btn-sm" onclick="exportExcelRpt()"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Export Excel</button>
+      <button class="btn btn-o btn-sm" onclick="window.print()"><i class="ti ti-printer" aria-hidden="true"></i> พิมพ์รายงาน</button>
+      <button class="btn btn-o btn-sm" onclick="alert('กรุณาตั้งค่า Mail Gateway ก่อนใช้งาน')"><i class="ti ti-mail" aria-hidden="true"></i> ส่ง E-mail</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-chart-pie" aria-hidden="true"></i>สัดส่วนการรับ-ส่งสินค้า</div>
+    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <canvas id="pie-c" width="180" height="180" style="max-width:180px"></canvas>
+      <div id="pie-leg" style="font-size:13px;line-height:2.2"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-packages" aria-hidden="true"></i>ยอดคงเหลือสต็อก</div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>สูตรปุ๋ย</th><th>คลัง</th><th>รับเข้า</th><th>ส่งออก</th><th>คงเหลือ</th><th>สถานะ</th></tr></thead>
+        <tbody id="stock-body"><tr><td colspan="6" style="text-align:center;color:var(--t2);padding:20px">กดดูรายงานเพื่อโหลดข้อมูล</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- หน้าตั้งค่า -->
+<div id="p-settings" class="page">
+  <div class="ph">
+    <h1><i class="ti ti-settings" aria-hidden="true" style="color:var(--gold);margin-right:6px"></i>ตั้งค่าระบบ</h1>
+    <p>จัดการข้อมูลอ้างอิง</p>
+  </div>
+  <div class="gold-bar"></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+    <div class="card"><div class="ctitle"><i class="ti ti-leaf" aria-hidden="true"></i>สูตรปุ๋ย</div><div id="lst-formula"></div>
+      <div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="inp-formula" placeholder="เพิ่มสูตรปุ๋ย..." style="flex:1"><button class="btn btn-p btn-sm" onclick="addItem('formula')"><i class="ti ti-plus" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="card"><div class="ctitle"><i class="ti ti-truck" aria-hidden="true"></i>เลขรถบรรทุก</div><div id="lst-truck"></div>
+      <div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="inp-truck" placeholder="เพิ่มเลขรถ..." style="flex:1"><button class="btn btn-p btn-sm" onclick="addItem('truck')"><i class="ti ti-plus" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="card"><div class="ctitle"><i class="ti ti-building-warehouse" aria-hidden="true"></i>โกดังที่จัดเก็บ</div><div id="lst-storage"></div>
+      <div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="inp-storage" placeholder="เพิ่มโกดัง..." style="flex:1"><button class="btn btn-p btn-sm" onclick="addItem('storage')"><i class="ti ti-plus" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="card"><div class="ctitle"><i class="ti ti-user" aria-hidden="true"></i>ผู้จัดส่งสินค้า</div><div id="lst-sender"></div>
+      <div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="inp-sender" placeholder="เพิ่มผู้จัดส่ง..." style="flex:1"><button class="btn btn-p btn-sm" onclick="addItem('sender')"><i class="ti ti-plus" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="card"><div class="ctitle"><i class="ti ti-user-check" aria-hidden="true"></i>ผู้รับสินค้า</div><div id="lst-receiver"></div>
+      <div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="inp-receiver" placeholder="เพิ่มผู้รับ..." style="flex:1"><button class="btn btn-p btn-sm" onclick="addItem('receiver')"><i class="ti ti-plus" aria-hidden="true"></i></button></div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- Modal ยืนยันเวลาเสร็จ -->
+<div id="modal-wrap" style="display:none;min-height:200px;background:rgba(0,0,0,.45);align-items:center;justify-content:center;border-radius:var(--border-radius-lg);margin-top:10px">
+  <div style="background:var(--w);border-radius:var(--border-radius-lg);padding:20px;width:300px">
+    <div style="font-size:15px;font-weight:500;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+      <i class="ti ti-clock" style="color:var(--gold)"></i> ยืนยันเวลาเสร็จ
+    </div>
+    <div class="fgrp"><label>เวลาเสร็จ</label><input type="time" id="modal-end-inp"></div>
+    <div class="bbar" style="margin-top:14px">
+      <button class="btn btn-p" onclick="confirmEnd()"><i class="ti ti-check"></i> ยืนยัน</button>
+      <button class="btn btn-o" onclick="closeModal()"><i class="ti ti-x"></i> ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<div id="print-area" style="display:none"></div>
+<style>
+@media print{
+  body>*{display:none!important}
+  #print-area{display:block!important;position:static;width:80mm}
+  @page{size:80mm 120mm portrait;margin:4mm}
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const S = {
+  receives:[], exports:[], warehouses:[],
+  docCounter:1, pendingIdx:-1,
+  cfg:{
+    formula:['16-20-0','15-15-15','46-0-0','0-0-60'],
+    truck:['80-1234','80-5678','80-9999'],
+    storage:['โกดัง A','โกดัง B','โกดัง C'],
+    sender:['นายสมชาย','นางสาวมาลี','นายวิชัย'],
+    receiver:['นายประสิทธิ์','นางสาวดาวเรือง']
+  }
+};
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const nav=document.querySelector(`.nav-item[onclick="showPage('${id}')"]`);
+  if(nav) nav.classList.add('active');
+  if(id==='p-warehouse'){tickDt();refreshWhTrucks();}
+  if(id==='p-export'){refreshExDropdowns();}
+  if(id==='p-report'){refreshReport();}
+}
+
+function tickDt(){
+  const el=document.getElementById('wh-dt');
+  if(el) el.textContent=new Date().toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'});
+}
+setInterval(()=>{if(document.getElementById('p-warehouse').classList.contains('active'))tickDt();},30000);
+
+function renderCfg(){
+  ['formula','truck','storage','sender','receiver'].forEach(k=>{
+    const el=document.getElementById('lst-'+k);
+    if(!el)return;
+    el.innerHTML=S.cfg[k].map((v,i)=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--bd)">
+        <span style="flex:1;font-size:13px">${v}</span>
+        <button class="btn btn-o btn-sm" onclick="editItem('${k}',${i})" style="padding:2px 8px"><i class="ti ti-edit" aria-hidden="true"></i></button>
+        <button class="btn btn-d btn-sm" onclick="delItem('${k}',${i})" style="padding:2px 8px"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      </div>`).join('');
+  });
+  fillSel('rv-formula', S.cfg.formula, '-- เลือกสูตร --');
+  fillSel('ex-truck', S.cfg.truck, '-- เลือกรถ --');
+  fillSel('ex-sender', S.cfg.sender, '-- เลือก --');
+  fillSel('wh-storage', S.cfg.storage, '-- เลือกโกดัง --');
+  fillSel('wh-receiver', S.cfg.receiver, '-- เลือก --');
+}
+
+function fillSel(id, arr, placeholder){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const cur=el.value;
+  el.innerHTML=`<option value="">${placeholder}</option>`+arr.map(v=>`<option value="${v}">${v}</option>`).join('');
+  el.value=cur;
+}
+
+function addItem(k){
+  const inp=document.getElementById('inp-'+k);
+  const v=inp.value.trim();
+  if(!v)return;
+  S.cfg[k].push(v);inp.value='';renderCfg();
+}
+function delItem(k,i){S.cfg[k].splice(i,1);renderCfg();}
+function editItem(k,i){
+  const nv=prompt('แก้ไข:',S.cfg[k][i]);
+  if(nv&&nv.trim()){S.cfg[k][i]=nv.trim();renderCfg();}
+}
+
+function saveReceive(){
+  const d={
+    date:document.getElementById('rv-date').value,
+    warehouse:document.getElementById('rv-warehouse').value,
+    location:document.getElementById('rv-location').value,
+    formula:document.getElementById('rv-formula').value,
+    line:document.getElementById('rv-line').value,
+    ship:document.getElementById('rv-ship').value,
+    barge:document.getElementById('rv-barge').value,
+    type:document.getElementById('rv-type').value,
+    cat:document.getElementById('rv-cat').value,
+    startTime:document.getElementById('rv-start').value,
+    endTime:'',status:'รอยืนยันเวลาจบ'
+  };
+  if(!d.ship){alert('กรุณากรอกชื่อเรือใหญ่');return;}
+  S.receives.push(d);
+  renderRvTable();refreshExDropdowns();clearRv();
+}
+
+function clearRv(){
+  ['rv-location','rv-line','rv-ship','rv-barge','rv-start'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rv-formula').value='';
+  document.getElementById('rv-warehouse').value='';
+}
+
+function renderRvTable(){
+  const tbody=document.getElementById('rv-body');
+  if(!S.receives.length){
+    tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--t2);padding:20px">ยังไม่มีรายการ</td></tr>';return;
+  }
+  tbody.innerHTML=S.receives.map((r,i)=>`<tr>
+    <td>${r.date}</td><td>${r.ship}</td><td>${r.barge}</td>
+    <td>${r.warehouse}</td><td>${r.formula}</td><td>${r.line}</td>
+    <td>${r.cat}</td><td>${r.startTime}</td><td>${r.endTime||'-'}</td>
+    <td>${r.status==='เสร็จสมบูรณ์'
+      ?'<span class="badge bg-green">เสร็จสมบูรณ์</span>'
+      :`<span class="badge bg-warn" onclick="openModal(${i})">รอยืนยันเวลาจบ</span>`}</td>
+    <td><button class="btn btn-d btn-sm" onclick="delRv(${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('');
+}
+function delRv(i){S.receives.splice(i,1);renderRvTable();}
+
+function openModal(i){
+  S.pendingIdx=i;
+  const mw=document.getElementById('modal-wrap');
+  mw.style.display='flex';
+}
+function closeModal(){document.getElementById('modal-wrap').style.display='none';}
+function confirmEnd(){
+  const t=document.getElementById('modal-end-inp').value;
+  if(!t){alert('กรุณากรอกเวลาเสร็จ');return;}
+  S.receives[S.pendingIdx].endTime=t;
+  S.receives[S.pendingIdx].status='เสร็จสมบูรณ์';
+  closeModal();renderRvTable();
+}
+
+function refreshExDropdowns(){
+  const ships=[...new Set(S.receives.map(r=>r.ship).filter(Boolean))];
+  const sel=document.getElementById('ex-ship');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- เลือกเรือ --</option>'+ships.map(s=>`<option value="${s}">${s}</option>`).join('');
+  sel.value=cur;
+  fillSel('ex-truck',S.cfg.truck,'-- เลือกรถ --');
+  fillSel('ex-sender',S.cfg.sender,'-- เลือก --');
+}
+
+function autoFillExport(){
+  const ship=document.getElementById('ex-ship').value;
+  const rec=S.receives.find(r=>r.ship===ship);
+  document.getElementById('ex-wh').textContent=rec?rec.warehouse:'-';
+  document.getElementById('ex-formula').textContent=rec?rec.formula:'-';
+  document.getElementById('ex-rv-start').textContent=rec?rec.startTime||'-':'-';
+  document.getElementById('ex-rv-end').textContent=rec?rec.endTime||'-':'-';
+  document.getElementById('ex-line').value=rec?rec.line:'';
+  const bargeSel=document.getElementById('ex-barge');
+  if(rec){
+    const barges=[...new Set(S.receives.filter(r=>r.ship===ship).map(r=>r.barge).filter(Boolean))];
+    bargeSel.innerHTML='<option value="">-- เลือกเรือโป๊ะ --</option>'+barges.map(b=>`<option value="${b}">${b}</option>`).join('');
+    if(barges.length===1) bargeSel.value=barges[0];
+  } else {
+    bargeSel.innerHTML='<option value="">-- เลือกเรือโป๊ะ --</option>';
+  }
+}
+
+function saveExport(){
+  const docno='CT-EX-'+String(S.docCounter).padStart(5,'0');
+  const d={
+    docno,
+    ship:document.getElementById('ex-ship').value,
+    warehouse:document.getElementById('ex-wh').textContent,
+    formula:document.getElementById('ex-formula').textContent,
+    line:document.getElementById('ex-line').value,
+    barge:document.getElementById('ex-barge').value,
+    truck:document.getElementById('ex-truck').value,
+    bags:document.getElementById('ex-bags').value,
+    sender:document.getElementById('ex-sender').value,
+    rvStart:document.getElementById('ex-rv-start').textContent,
+    rvEnd:document.getElementById('ex-rv-end').textContent,
+    startTime:document.getElementById('ex-start').value,
+    endTime:document.getElementById('ex-end').value,
+    note:document.getElementById('ex-note').value,
+    date:new Date().toLocaleDateString('th-TH')
+  };
+  if(!d.truck){alert('กรุณาเลือกรถบรรทุก');return;}
+  S.exports.push(d);S.docCounter++;
+  document.getElementById('ex-docno').textContent='CT-EX-'+String(S.docCounter).padStart(5,'0');
+  renderExTable();refreshWhTrucks();clearEx();
+}
+
+function clearEx(){
+  ['ex-bags','ex-start','ex-end','ex-note','ex-line'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ex-ship').value='';
+  document.getElementById('ex-wh').textContent='-';
+  document.getElementById('ex-formula').textContent='-';
+  document.getElementById('ex-rv-start').textContent='-';
+  document.getElementById('ex-rv-end').textContent='-';
+  document.getElementById('ex-barge').innerHTML='<option value="">-- เลือกเรือโป๊ะ --</option>';
+  document.getElementById('ex-truck').value='';
+  document.getElementById('ex-sender').value='';
+}
+
+function renderExTable(){
+  const tbody=document.getElementById('ex-body');
+  if(!S.exports.length){
+    tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--t2);padding:20px">ยังไม่มีรายการ</td></tr>';return;
+  }
+  tbody.innerHTML=S.exports.map((e,i)=>`<tr>
+    <td><span class="doc-no">${e.docno}</span></td>
+    <td>${e.ship}</td><td>${e.warehouse}</td><td>${e.formula}</td>
+    <td>${e.line}</td><td>${e.truck}</td><td>${e.bags}</td>
+    <td>${e.startTime}</td><td>${e.endTime}</td><td>${e.sender}</td>
+    <td><button class="btn btn-o btn-sm" onclick="printEx(${i})"><i class="ti ti-printer"></i></button></td>
+  </tr>`).join('');
+}
+
+function printEx(i){
+  const e=S.exports[i];
+  document.getElementById('print-area').innerHTML=`
+    <div style="width:72mm;font-family:sans-serif;font-size:10px;padding:0">
+      <div style="text-align:center;margin-bottom:6px">
+        <div style="font-size:14px;font-weight:bold;color:#B8960C">◈ CHIA TAI ◈</div>
+        <div style="font-size:8px;color:#555">บริษัทเจียไต๋ จำกัด</div>
+        <div style="font-size:8px;color:#555">ใบส่งออกสินค้าระหว่างหน้า-เข้าโกดัง</div>
+        <div style="border-bottom:1px solid #aaa;margin:3px 0"></div>
+      </div>
+      <table style="width:100%;font-size:9px;border-collapse:collapse">
+        <tr><td style="width:42%;color:#666;padding:2px 0">เลขที่เอกสาร</td><td><b>${e.docno}</b></td></tr>
+        <tr><td style="color:#666;padding:2px 0">วันที่</td><td>${e.date}</td></tr>
+        <tr><td style="color:#666;padding:2px 0">รถบรรทุก</td><td><b>${e.truck}</b></td></tr>
+        <tr><td style="color:#666;padding:2px 0">Line ผลิต</td><td>${e.line}</td></tr>
+        <tr><td style="color:#666;padding:2px 0">หมวดหมู่</td><td>${e.cat||'-'}</td></tr>
+        <tr><td style="color:#666;padding:2px 0">สูตรปุ๋ย</td><td>${e.formula}</td></tr>
+        <tr><td style="color:#666;padding:2px 0">จำนวนกระสอบ</td><td><b>${e.bags}</b></td></tr>
+        <tr><td style="color:#666;padding:2px 0">ผู้จัดส่ง</td><td>${e.sender}</td></tr>
+        <tr><td style="color:#666;padding:2px 0">เวลาเริ่ม</td><td>${e.startTime||'-'}</td></tr>
+        <tr><td style="color:#666;padding:2px 0">เวลาเสร็จ</td><td>${e.endTime||'-'}</td></tr>
+      </table>
+      <div style="border-top:1px solid #aaa;margin-top:10px;padding-top:6px;display:flex;justify-content:space-between;gap:6px">
+        <div style="text-align:center;flex:1"><div style="border-top:1px solid #333;margin-top:20px;font-size:8px">ผู้ส่ง</div></div>
+        <div style="text-align:center;flex:1"><div style="border-top:1px solid #333;margin-top:20px;font-size:8px">ผู้รับ</div></div>
+      </div>
+    </div>`;
+  window.print();
+}
+
+function refreshWhTrucks(){
+  const sel=document.getElementById('wh-truck');
+  const trucks=[...new Set(S.exports.map(e=>e.truck).filter(Boolean))];
+  sel.innerHTML='<option value="">-- เลือกรถ --</option>'+
+    trucks.flatMap(t=>S.exports.filter(e=>e.truck===t).map((e,_)=>{
+      const idx=S.exports.indexOf(e);
+      return `<option value="${t}|${idx}">${t} | ${e.ship} | ${e.formula} | ${e.startTime||'?'}-${e.endTime||'?'}</option>`;
+    })).join('');
+}
+
+function autoFillWh(){
+  const val=document.getElementById('wh-truck').value;
+  if(!val)return;
+  const [,idx]=val.split('|');
+  const e=S.exports[parseInt(idx)];
+  if(!e)return;
+  document.getElementById('wh-ship').textContent=e.ship;
+  document.getElementById('wh-barge').textContent=e.barge;
+  document.getElementById('wh-formula').textContent=e.formula;
+  document.getElementById('wh-bags').textContent=e.bags;
+  document.getElementById('wh-time').textContent=(e.startTime||'-')+' / '+(e.endTime||'-');
+}
+
+function saveWh(){
+  const val=document.getElementById('wh-truck').value;
+  if(!val){alert('กรุณาเลือกรถบรรทุก');return;}
+  const [truck]=val.split('|');
+  const d={
+    datetime:new Date().toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}),
+    truck,
+    ship:document.getElementById('wh-ship').textContent,
+    barge:document.getElementById('wh-barge').textContent,
+    formula:document.getElementById('wh-formula').textContent,
+    bags:document.getElementById('wh-bags').textContent,
+    time:document.getElementById('wh-time').textContent,
+    lot:document.getElementById('wh-lot').value,
+    storage:document.getElementById('wh-storage').value,
+    receiver:document.getElementById('wh-receiver').value,
+    note:document.getElementById('wh-note').value,
+    status:'รับเข้าเรียบร้อย'
+  };
+  S.warehouses.push(d);renderWhTable();refreshReport();
+  ['wh-lot','wh-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('wh-truck').value='';
+  document.getElementById('wh-storage').value='';
+  document.getElementById('wh-receiver').value='';
+  ['wh-ship','wh-barge','wh-formula','wh-bags','wh-time'].forEach(id=>document.getElementById(id).textContent='-');
+}
+
+function renderWhTable(){
+  const tbody=document.getElementById('wh-body');
+  if(!S.warehouses.length){
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--t2);padding:20px">ยังไม่มีรายการ</td></tr>';return;
+  }
+  tbody.innerHTML=S.warehouses.map(w=>`<tr>
+    <td>${w.datetime}</td><td>${w.truck}</td><td>${w.ship}</td>
+    <td>${w.barge}</td><td>${w.formula}</td><td>${w.bags}</td>
+    <td>${w.lot}</td><td>${w.storage}</td><td>${w.receiver}</td>
+    <td><span class="badge bg-green">${w.status}</span></td>
+  </tr>`).join('');
+}
+
+function refreshReport(){
+  document.getElementById('rpt-rv').textContent=S.receives.length;
+  document.getElementById('rpt-ex').textContent=S.exports.length;
+  document.getElementById('rpt-wh').textContent=S.warehouses.length;
+  document.getElementById('rpt-bags').textContent=S.exports.reduce((s,e)=>s+(parseInt(e.bags)||0),0).toLocaleString();
+  drawPie();drawStock();
+  const ships=[...new Set([...S.receives,...S.exports].map(r=>r.ship).filter(Boolean))];
+  const sel=document.getElementById('rpt-ship');
+  if(sel){const c=sel.value;sel.innerHTML='<option value="">ทั้งหมด</option>'+ships.map(s=>`<option value="${s}">${s}</option>`).join('');sel.value=c;}
+}
+
+function genReport(){refreshReport();alert('โหลดรายงานเรียบร้อย ✓');}
+
+function drawPie(){
+  const c=document.getElementById('pie-c');if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,180,180);
+  const ex=S.exports.length,wh=S.warehouses.length,tot=ex+wh||1;
+  const data=[{v:ex,c:'#B8960C',l:'ส่งออก'},{v:wh,c:'#1B3A2D',l:'รับเข้า'}];
+  let st=-Math.PI/2;
+  data.forEach(d=>{const a=(d.v/tot)*2*Math.PI;ctx.beginPath();ctx.moveTo(90,90);ctx.arc(90,90,80,st,st+a);ctx.fillStyle=d.c;ctx.fill();st+=a;});
+  ctx.beginPath();ctx.arc(90,90,40,0,2*Math.PI);ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--color-background-primary')||'#fff';ctx.fill();
+  document.getElementById('pie-leg').innerHTML=data.map(d=>`<div><span style="display:inline-block;width:12px;height:12px;background:${d.c};border-radius:2px;margin-right:6px;vertical-align:-1px"></span>${d.l}: ${d.v} (${Math.round(d.v/tot*100)}%)</div>`).join('');
+}
+
+function drawStock(){
+  const tbody=document.getElementById('stock-body');
+  const fs=[...new Set(S.exports.map(e=>e.formula).filter(Boolean))];
+  if(!fs.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--t2);padding:20px">ยังไม่มีข้อมูล</td></tr>';return;}
+  tbody.innerHTML=fs.map(f=>{
+    const sent=S.exports.filter(e=>e.formula===f).reduce((s,e)=>s+(parseInt(e.bags)||0),0);
+    const recv=S.warehouses.filter(w=>w.formula===f).reduce((s,w)=>s+(parseInt(w.bags)||0),0);
+    const rem=recv-sent;
+    const wh=S.exports.find(e=>e.formula===f)?.warehouse||'-';
+    return `<tr><td>${f}</td><td>${wh}</td><td>${recv.toLocaleString()}</td><td>${sent.toLocaleString()}</td><td><b>${rem.toLocaleString()}</b></td>
+      <td>${rem>=0?'<span class="badge bg-green">รับเข้าเรียบร้อย</span>':'<span class="badge bg-red">ส่งเกินยอด</span>'}</td></tr>`;
+  }).join('');
+}
+
+function exportExcelEx(){
+  if(!S.exports.length){alert('ไม่มีข้อมูล');return;}
+  const ws=XLSX.utils.json_to_sheet(S.exports.map(e=>({'เลขที่เอกสาร':e.docno,'วันที่':e.date,'เรือใหญ่':e.ship,'คลัง':e.warehouse,'สูตรปุ๋ย':e.formula,'Line':e.line,'รถบรรทุก':e.truck,'เรือโป๊ะ':e.barge,'กระสอบ':e.bags,'ผู้จัดส่ง':e.sender,'เวลาเริ่ม(เรือ)':e.rvStart,'เวลาเสร็จ(เรือ)':e.rvEnd,'เวลาเริ่มส่งออก':e.startTime,'เวลาเสร็จส่งออก':e.endTime,'หมายเหตุ':e.note})));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'ส่งออกสินค้า');
+  XLSX.writeFile(wb,'export_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+function exportExcelWh(){
+  if(!S.warehouses.length){alert('ไม่มีข้อมูล');return;}
+  const ws=XLSX.utils.json_to_sheet(S.warehouses.map(w=>({'วันที่-เวลา':w.datetime,'รถบรรทุก':w.truck,'เรือใหญ่':w.ship,'เรือโป๊ะ':w.barge,'สูตรปุ๋ย':w.formula,'กระสอบ':w.bags,'เวลาเริ่ม/เสร็จ':w.time,'Lot':w.lot,'โกดัง':w.storage,'ผู้รับ':w.receiver,'สถานะ':w.status,'หมายเหตุ':w.note})));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'รับเข้าโกดัง');
+  XLSX.writeFile(wb,'warehouse_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+function exportExcelRpt(){
+  const all=[...S.receives.map(r=>({ประเภท:'รับเรือ',...r})),...S.exports.map(e=>({ประเภท:'ส่งออก',...e})),...S.warehouses.map(w=>({ประเภท:'รับเข้าโกดัง',...w}))];
+  if(!all.length){alert('ไม่มีข้อมูล');return;}
+  const ws=XLSX.utils.json_to_sheet(all);
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'รายงานรวม');
+  XLSX.writeFile(wb,'report_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+document.getElementById('rv-date').value=new Date().toISOString().slice(0,10);
+renderCfg();
+</script>
